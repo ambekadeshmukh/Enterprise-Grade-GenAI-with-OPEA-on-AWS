@@ -1,7 +1,5 @@
 # Enterprise-Grade GenAI with OPEA on AWS
 
-# Enterprise-Grade GenAI with OPEA on AWS
-
 This repository contains a complete implementation of an enterprise-grade RAG (Retrieval Augmented Generation) system using the Open Platform for Enterprise AI (OPEA) ChatQnA example, deployed on AWS EKS.
 
 ## Overview
