@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-prep
+  namespace: opea-chatqna
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: data-prep
+  template:
+    metadata:
+      labels:
+        app: data-prep
+    spec:
+      containers:
+      - name: data-prep
+        image: quay.io/opea/chatqna-dataprep:latest
+        ports:
+        - containerPort: 6007
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "1Gi"
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: data-prep
+  namespace: opea-chatqna
+spec:
+  selector:
+    app: data-prep
+  ports:
+  - port: 6007
+    targetPort: 6007
+  type: ClusterIP

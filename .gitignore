@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Kubernetes
+kubeconfig
+*.kubeconfig
+
+# AWS
+.aws-sam/
+aws-sam-output.yaml
+cdk.out/
+.cdk.staging/
+*.swp
+*.swo
+*~
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# MacOS
+.DS_Store
+
+# Sample data
+sample-data/documents/*
+!sample-data/documents/.gitkeep
+
+# Environment variables
+.env
+.env.*
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

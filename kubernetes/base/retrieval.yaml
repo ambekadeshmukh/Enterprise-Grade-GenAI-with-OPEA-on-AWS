@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: retrieval
+  namespace: opea-chatqna
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: retrieval
+  template:
+    metadata:
+      labels:
+        app: retrieval
+    spec:
+      containers:
+      - name: retrieval
+        image: quay.io/opea/chatqna-retrieval:latest
+        ports:
+        - containerPort: 7000
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "1Gi"
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+        env:
+        - name: VECTOR_DB_HOST
+          value: redis-vectordb
+        - name: VECTOR_DB_PORT
+          value: "8001"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: retrieval
+  namespace: opea-chatqna
+spec:
+  selector:
+    app: retrieval
+  ports:
+  - port: 7000
+    targetPort: 7000
+  type: ClusterIP

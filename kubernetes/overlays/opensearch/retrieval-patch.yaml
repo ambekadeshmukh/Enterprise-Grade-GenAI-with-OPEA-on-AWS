@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: retrieval
+  namespace: opea-chatqna
+spec:
+  template:
+    spec:
+      containers:
+      - name: retrieval
+        env:
+        - name: VECTOR_DB_TYPE
+          value: "opensearch"
+        - name: VECTOR_DB_HOST
+          value: "opensearch"
+        - name: VECTOR_DB_PORT
+          value: "9200"

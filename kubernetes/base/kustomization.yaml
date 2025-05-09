@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - namespace.yaml
+  - storage.yaml
+  - data-prep.yaml
+  - embedding.yaml
+  - vector-db-redis.yaml
+  - retrieval.yaml
+  - reranker.yaml
+  - llm-tgi.yaml
+  - gateway.yaml
+  - ui.yaml

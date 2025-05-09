@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llm-bedrock
+  namespace: opea-chatqna
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: llm-bedrock
+  template:
+    metadata:
+      labels:
+        app: llm-bedrock
+    spec:
+      serviceAccountName: bedrock-service-account
+      containers:
+      - name: llm-bedrock
+        image: amazon/aws-cli:2.13.0
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          pip install flask requests boto3 && \
+          cat > /app.py << 'EOL'
+          import boto3
+          import json
+          import os
+          from flask import Flask, request, jsonify
+
+          app = Flask(__name__)
+          bedrock_runtime = boto3.client('bedrock-runtime', region_name='us-east-1')
+          model_id = os.environ.get('BEDROCK_MODEL_ID', 'anthropic.claude-3-sonnet-20240229-v1:0')
+
+          @app.route('/generate', methods=['POST'])
+          def generate():
+              data = request.json
+              prompt = data.get('prompt', '')
+              max_tokens = data.get('max_tokens', 500)
+              temperature = data.get('temperature', 0.7)
+              
+              if 'anthropic.claude' in model_id:
+                  payload = {
+                      "anthropic_version": "bedrock-2023-05-31",
+                      "max_tokens": max_tokens,
+                      "temperature": temperature,
+                      "messages": [{"role": "user", "content": prompt}]
+                  }
+              else:  # Fallback for other models
+                  payload = {
+                      "prompt": prompt,
+                      "max_tokens_to_sample": max_tokens,
+                      "temperature": temperature
+                  }
+              
+              try:
+                  response = bedrock_runtime.invoke_model(
+                      modelId=model_id,
+                      body=json.dumps(payload)
+                  )
+                  
+                  response_body = json.loads(response['body'].read())
+                  
+                  if 'anthropic.claude' in model_id:
+                      generated_text = response_body['content'][0]['text']
+                  else:
+                      generated_text = response_body['completion']
+                  
+                  return jsonify({
+                      "generated_text": generated_text
+                  })
+              except Exception as e:
+                  return jsonify({"error": str(e)}), 500
+
+          if __name__ == '__main__':
+              app.run(host='0.0.0.0', port=8080)
+          EOL
+          
+          python /app.py
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "1Gi"
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+        env:
+        - name: BEDROCK_MODEL_ID
+          value: "anthropic.claude-3-sonnet-20240229-v1:0"
+        - name: AWS_REGION
+          value: "us-east-1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: llm-bedrock
+  namespace: opea-chatqna
+spec:
+  selector:
+    app: llm-bedrock
+  ports:
+  - port: 8080
+    targetPort: 8080
+  type: ClusterIP

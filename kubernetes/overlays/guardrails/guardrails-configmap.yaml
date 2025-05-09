@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: guardrails-config
+  namespace: opea-chatqna
+data:
+  guardrails.json: |-
+    {
+      "prompt_moderation": {
+        "enabled": true,
+        "blocked_categories": ["hate", "harassment", "self-harm", "sexual", "violence"],
+        "threshold": 0.7
+      },
+      "output_moderation": {
+        "enabled": true,
+        "blocked_categories": ["hate", "harassment", "self-harm", "sexual", "violence"],
+        "threshold": 0.7
+      },
+      "topic_guidance": {
+        "enabled": true,
+        "allowed_topics": ["business", "technical", "product", "support"],
+        "prohibited_topics": ["politics", "medical", "legal"]
+      },
+      "pii_detection": {
+        "enabled": true,
+        "detection_entities": ["PERSON", "EMAIL", "PHONE_NUMBER", "CREDIT_CARD", "SSN"],
+        "action": "redact"
+      }
+    }
