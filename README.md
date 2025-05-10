@@ -6,7 +6,8 @@ This repository contains a complete implementation of an enterprise-grade RAG (R
 
 OPEA ChatQnA demonstrates a production-ready implementation of the RAG architecture, which combines the benefits of knowledge bases with the power of large language models to generate accurate, contextual, and up-to-date responses.
 
-![OPEA Architecture](docs/images/opea-architecture.png)
+![opea-architecture](https://github.com/user-attachments/assets/5f06b799-e68f-4756-b2ae-2c04582af845)
+
 
 ## Features
 
